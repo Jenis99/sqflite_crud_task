@@ -32,7 +32,7 @@ class ProductDetailScreen extends StatelessWidget {
                 _dialogBuilder();
               },
               icon: Icon(
-                Icons.delete,
+                Icons.deleteProduct,
                 color: Colors.red,
               )),
         ],
@@ -70,7 +70,7 @@ class ProductDetailScreen extends StatelessWidget {
               ),
               child: const Text(AppString.deleteTitle),
               onPressed: () async {
-                await ProductService.instance.delete(productModel?.productId ?? 0);
+                await ProductService.instance.deleteProduct(productModel?.productId ?? 0);
                 Get.back();
                 Get.back();
               },

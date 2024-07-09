@@ -30,7 +30,6 @@ class ProductService {
       return ProductModel.fromJson(json);
     }).toList();
     productListSink.add(productModelList);
-    // Convert the List<Map<String, dynamic> into a List<Note>.
     return productModelList;
   }
 
@@ -50,55 +49,29 @@ class ProductService {
     }
   }
 
-  // Define a function that inserts notes into the database
   Future<void> addProduct(ProductModel product) async {
-    // Get a reference to the database.
     final db = await databaseHelper.database;
 
-    // Insert the Note into the correct table. You might also specify the
-    // `conflictAlgorithm` to use in case the same Note is inserted twice.
-    //
-    // In this case, replace any previous data.
     await db.insert(DatabaseHelper.productTable, product.toJson(), conflictAlgorithm: ConflictAlgorithm.replace);
     getAllProductData();
   }
 
-  // Define a function to update a note
   Future<int> updateProduct(ProductModel product) async {
-    print("updateProduct call ${product.toJson()}");
-    print("updateProduct call ${product?.productId}");
-    // Get a reference to the database.
     final db = await databaseHelper.database;
 
-    // Update the given Note.
-    var res = await db.update(DatabaseHelper.productTable, product.toJson(),
-        // Ensure that the Note has a matching id.
-        where: '${DatabaseHelper.productId} = ?',
-        // Pass the Note's id as a whereArg to prevent SQL injection.
-        whereArgs: [product.productId]);
+    var res =
+        await db.update(DatabaseHelper.productTable, product.toJson(), where: '${DatabaseHelper.productId} = ?', whereArgs: [product.productId]);
     getAllProductData();
     return res;
   }
 
-  // Define a function to delete a note
-  Future<void> delete(int id) async {
-    // Get a reference to the database.
+  Future<void> deleteProduct(int id) async {
     final db = await databaseHelper.database;
     try {
-      // Remove the Note from the database.
-      await db.delete(DatabaseHelper.productTable,
-          // Use a `where` clause to delete a specific Note.
-          where: "${DatabaseHelper.productId} = ?",
-          // Pass the Dog's id as a whereArg to prevent SQL injection.
-          whereArgs: [id]);
+      await db.deleteProduct(DatabaseHelper.productTable, where: "${DatabaseHelper.productId} = ?", whereArgs: [id]);
       getAllProductData();
     } catch (err) {
       debugPrint("Something went wrong when deleting an item: $err");
     }
-  }
-
-  Future close() async {
-    final db = await databaseHelper.database;
-    db.close();
   }
 }
